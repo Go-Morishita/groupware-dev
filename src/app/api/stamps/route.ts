@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/app/lib/utils/supabase/client"
+import { createClient } from "@/app/lib/utils/supabase/server"
 import { nanoid } from "nanoid";
 
 export async function GET(request: Request) {
@@ -12,7 +12,7 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: "Email is required." }, { status: 400 });
         }
 
-        const supabase = createClient();
+        const supabase = await createClient();
         const { data, error } = await supabase
             .from("stamps")
             .select("clock_in, clock_out")
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request){
     try {
         const { action, email, stamp_id } = await request.json();
-        const supabase = createClient();
+        const supabase = await createClient();
 
         if (!action) {
             return NextResponse.json({ error: "action が指定されていません。"}, { status: 400 });

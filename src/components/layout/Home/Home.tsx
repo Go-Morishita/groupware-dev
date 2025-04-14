@@ -42,6 +42,7 @@ export default function Home({ session }: SessionProps) {
                     body: JSON.stringify({
                         name: session.user.name,
                         email: session.user.email,
+                        image: session.user.image,
                     }),
                 });
 
