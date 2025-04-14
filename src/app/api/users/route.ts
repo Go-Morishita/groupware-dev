@@ -42,22 +42,32 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
     try {
-        const { searchParams } = new URL(request.url);
-        const email = searchParams.get("email");
-
-        if (!email) {
-            return NextResponse.json({ error: "Email is required." }, { status: 400 });
-        }
-
-        const supabase = await createClient();
-        const { data, error } = await supabase.from('users').select('id').eq('email', email).maybeSingle();
-
+      const { searchParams } = new URL(request.url);
+      const email = searchParams.get("email");
+      const supabase = await createClient();
+  
+      if (email) {
+        // email が指定されていれば、該当ユーザーの id を返す
+        const { data, error } = await supabase
+          .from("users")
+          .select("id")
+          .eq("email", email)
+          .maybeSingle();
+  
         if (error) {
-            return NextResponse.json({ error: error.message }, { status: 500 });
+          return NextResponse.json({ error: error.message }, { status: 500 });
         }
-
         return NextResponse.json(data);
+      } else {
+        // email が指定されていなければ、ユーザー一覧を返す
+        const { data, error } = await supabase.from("users").select("*");
+  
+        if (error) {
+          return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+        return NextResponse.json(data);
+      }
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
-}
+  }
