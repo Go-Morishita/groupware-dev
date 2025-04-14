@@ -1,10 +1,5 @@
-import { createClient } from '@/app/lib/utils/supabase/client';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
-
-interface SessionProps {
-  session: any
-}
 
 const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
   // 各入力項目の状態管理
@@ -24,6 +19,9 @@ const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
       return;
     }
     try {
+      const userRes = await fetch(`/api/users?email=${session?.user?.email}`);
+      const manager = await userRes.json();
+      const managerId = manager?.id;
       const res = await fetch("/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -33,7 +31,7 @@ const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
           description: description,
           deadline: deadline,
           assigner_id: userId,
-          manager_id: 3,
+          manager_id: managerId,
         }),
       });
       const data = await res.json();
@@ -49,7 +47,7 @@ const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
         // 追加後、タスク一覧を再取得
         if (userId) fetchUserTask(userId);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       alert("通信エラーが発生しました");
     }
@@ -62,7 +60,7 @@ const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
       const res = await fetch('/api/users'); // /api/users エンドポイントがあれば利用
       const data = await res.json();
       setUsers(data ?? []);
-    } catch (err: any) {
+    } catch (err) {
       console.log(err);
     }
   };
@@ -73,7 +71,7 @@ const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
       const res = await fetch(`/api/tasks?assigner_id=${assigner_id}`);
       const data = await res.json();
       setUserTasks(data ?? []);
-    } catch (err: any) {
+    } catch (err) {
       console.log(err);
     }
   };

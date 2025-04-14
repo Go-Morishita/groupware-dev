@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/app/lib/utils/supabase/server";
-import { nanoid } from "nanoid";
 
 // GET: クエリパラメータで assigner_id を受け取り、該当のタスクを取得
 export async function GET(request: Request) {
