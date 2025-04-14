@@ -12,7 +12,7 @@ import {
     Typography,
     CircularProgress
 } from '@mui/material';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/app/lib/utils/supabase/client';
 import { Session } from 'next-auth';
 
 interface AttendanceRecord {

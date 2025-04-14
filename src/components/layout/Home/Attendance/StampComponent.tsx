@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/app/lib/utils/supabase/client';
 import useLocalStorageState from 'use-local-storage-state';
 import { nanoid } from 'nanoid';
 import { Session } from 'next-auth';

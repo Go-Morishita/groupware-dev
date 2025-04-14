@@ -1,11 +1,11 @@
 "use client"
-import AttendanceContent from "@/components/AttendanceContent";
-import DashboardContent from "@/components/DashboardContent";
-import Header from "@/components/Header";
-import InboxContent from "@/components/InboxContent";
-import MailSalesContent from "@/components/MailSalesContent";
-import TaskContent from "@/components/TaskContent";
-import { createClient } from "@/utils/supabase/client";
+import AttendanceContent from "@/components/layout/Home/Attendance/AttendanceContent";
+import DashboardContent from "@/components/layout/Home/Dashboard/DashboardContent";
+import Header from "@/components/layout/Header";
+import InboxContent from "@/components/layout/Home/Inbox/InboxContent";
+import MailSalesContent from "@/components/layout/Home/MailSales/MailSalesContent";
+import TaskContent from "@/components/layout/Home/Task/TaskContent";
+import { createClient } from "@/app/lib/utils/supabase/client";
 import type { Session } from "@auth/core/types";
 import { useEffect, useState } from "react";
 import { BsClock } from "react-icons/bs";

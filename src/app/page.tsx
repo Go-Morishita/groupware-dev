@@ -1,4 +1,4 @@
-import { signIn } from "@/auth";
+import { signIn } from "@/app/lib/auth";
 import { FcGoogle } from "react-icons/fc";
 
 export default function Home() {
