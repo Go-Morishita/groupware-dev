@@ -1,10 +1,6 @@
 import { createClient } from '@/app/lib/utils/supabase/client';
 import React, { useEffect, useState } from 'react'
 
-interface SessionProps {
-  session: any;
-}
-
 const SelfTaskComponent: React.FC<SessionProps> = ({ session }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const supabase = createClient();
