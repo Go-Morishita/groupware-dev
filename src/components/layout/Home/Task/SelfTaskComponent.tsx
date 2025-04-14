@@ -23,7 +23,7 @@ const SelfTaskComponent: React.FC<SessionProps> = ({ session }) => {
     const { data, error } = await supabase
       .from("tasks")
       .select('*')
-      .eq('assigner_id', 2);
+      .eq('assigner_id', 13);
 
     if (error) {
       console.error("Error fetching tasks:", error);

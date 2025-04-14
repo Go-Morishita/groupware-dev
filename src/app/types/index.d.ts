@@ -28,6 +28,7 @@ interface User {
     id: number;
     name: String;
     email: String;
+    image: String
     role: String;
     work_now: boolean;
 }
