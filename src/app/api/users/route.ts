@@ -50,12 +50,13 @@ export async function GET(request: Request) {
         }
 
         const supabase = await createClient();
-        const { data, error } = await supabase.from('users').select('id').eq('email', email);
+        const { data, error } = await supabase.from('users').select('id').eq('email', email).maybeSingle();
 
         if (error) {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
+        return NextResponse.json(data);
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

@@ -25,11 +25,10 @@ const AttendanceRecordComponent = ({ session }: SessionProps) => {
             try {
                 // email をクエリパラメータとして渡す
                 const res = await fetch(`/api/stamps?email=${session?.user?.email}`);
-
                 const data = await res.json();
 
                 if (data.error) {
-                    console.error('取得エラー:', data.error);
+                    console.error('取得エラー:', data[0].id);
                     setError('データの取得に失敗しました。');
                     setLoading(false);
                     return;

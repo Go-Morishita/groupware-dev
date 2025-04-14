@@ -7,6 +7,7 @@ interface SessionProps {
 
 const SelfTaskComponent: React.FC<SessionProps> = ({ session }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const supabase = createClient();
 
   // スライダー変更時にタスクの進捗値をローカル状態で更新
   const handleSliderChange = (id: number, value: number) => {
@@ -19,15 +20,19 @@ const SelfTaskComponent: React.FC<SessionProps> = ({ session }) => {
 
   // Supabaseからタスクを取得する関数
   const fetchTasks = async () => {
-    const supabase = createClient();
+    const res = await fetch(`/api/users?email=${session?.user?.email}`);
+    const userData = await res.json();
+    const id = userData?.id;
+
     const { data, error } = await supabase
       .from("tasks")
       .select('*')
-      .eq('assigner_id', 13);
+      .eq('assigner_id', id);
 
     if (error) {
       console.error("Error fetching tasks:", error);
     }
+
     setTasks(data ?? []);
   };
 
