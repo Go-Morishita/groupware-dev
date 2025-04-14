@@ -4,16 +4,6 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/app/lib/utils/supabase/client';
 import useLocalStorageState from 'use-local-storage-state';
 import { nanoid } from 'nanoid';
-import { Session } from 'next-auth';
-
-type LocalStorageStamp = {
-    stamp_id: string;
-    work_now: boolean;
-};
-
-interface SessionProps {
-    session: Session | null;
-}
 
 const StampComponent = ({ session }: SessionProps) => {
     const [currentTime, setCurrentTime] = useState(new Date());

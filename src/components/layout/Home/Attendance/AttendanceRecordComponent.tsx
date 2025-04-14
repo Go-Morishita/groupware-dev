@@ -13,17 +13,6 @@ import {
     CircularProgress
 } from '@mui/material';
 import { createClient } from '@/app/lib/utils/supabase/client';
-import { Session } from 'next-auth';
-
-interface AttendanceRecord {
-    date: Date;
-    clockIn: Date;
-    clockOut: Date;
-}
-
-interface SessionProps {
-    session: Session | null;
-}
 
 const AttendanceRecordComponent = ({ session }: SessionProps) => {
     const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);

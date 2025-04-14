@@ -2,14 +2,8 @@ import { useState } from "react";
 import { BsClock } from "react-icons/bs";
 import StampComponent from "./StampComponent";
 import AttendanceRecordComponent from "./AttendanceRecordComponent";
-import { Session } from "next-auth";
 
-interface  SessionProps {
-    session: Session | null;
-}
-
-const AttendanceContent = ({ session }:  SessionProps) => {
-    // activeTab には 'stamp' または 'attendance' が入る（初期値は 'stamp' とする）
+const AttendanceContent = ({ session }: SessionProps) => {
     const [activeTab, setActiveTab] = useState<'stamp' | 'attendance'>("stamp");
 
     return (

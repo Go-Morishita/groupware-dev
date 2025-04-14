@@ -6,7 +6,6 @@ import InboxContent from "@/components/layout/Home/Inbox/InboxContent";
 import MailSalesContent from "@/components/layout/Home/MailSales/MailSalesContent";
 import TaskContent from "@/components/layout/Home/Task/TaskContent";
 import { createClient } from "@/app/lib/utils/supabase/client";
-import type { Session } from "@auth/core/types";
 import { useEffect, useState } from "react";
 import { BsClock } from "react-icons/bs";
 import { BsGrid } from "react-icons/bs";
@@ -14,16 +13,10 @@ import { BsInbox } from "react-icons/bs";
 import { BsEnvelopeArrowUp } from "react-icons/bs";
 import { BsCardChecklist } from "react-icons/bs";
 
-type ContentKey = "dashboard" | "attendance" | "task" | "inbox" | "mailSales";
-
-interface SessionProps {
-    session: Session | null;
-}
-
 export default function Home({ session }: SessionProps) {
 
     // 現在選択中のコンテンツを state で保持
-    const [activeContent, setActiveContent] = useState<ContentKey>("dashboard");
+    const [activeContent, setActiveContent] = useState<"dashboard" | "attendance" | "task" | "inbox" | "mailSales">("dashboard");
 
     const renderContent = () => {
         switch (activeContent) {
@@ -32,7 +25,7 @@ export default function Home({ session }: SessionProps) {
             case "attendance":
                 return <AttendanceContent session={session} />;
             case "task":
-                return <TaskContent />;
+                return <TaskContent session={session} />;
             case "inbox":
                 return <InboxContent />;
             case "mailSales":
