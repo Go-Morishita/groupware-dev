@@ -12,3 +12,14 @@ type LocalStorageStamp = {
     stamp_id: string;
     work_now: boolean;
 };
+
+interface Task {
+    id: number;
+    title: string;
+    description: string;
+    progress: number;
+    deadline: Date;
+    status: String;
+    manager_id: number;
+    assigner_id: number;
+}
