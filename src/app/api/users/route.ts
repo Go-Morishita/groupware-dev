@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
         // 既存ユーザーの存在チェック
         const { data, error } = await supabase
-            .from("user")
+            .from("users")
             .select('*')
             .eq("email", email)
             .maybeSingle();
