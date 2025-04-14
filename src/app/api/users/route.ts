@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/app/lib/utils/supabase/client";
+import { createClient } from "@/app/lib/utils/supabase/server";
 
 export async function POST(request: Request) {
     try {
-        const { name, email } = await request.json();
+        const { name, email, image } = await request.json();
 
         if (!email) {
             return NextResponse.json({ error: "Email is required." }, { status: 400 });
         }
 
-        const supabase = createClient();
+        const supabase = await createClient();
 
         // 既存ユーザーの存在チェック
         const { data, error } = await supabase
@@ -25,6 +25,7 @@ export async function POST(request: Request) {
                 .insert({
                     name,
                     email,
+                    image,
                 });
 
             if (insertError) {
