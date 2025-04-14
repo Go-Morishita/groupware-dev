@@ -99,7 +99,7 @@ const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
                 }`}
             >
               <Image
-                src={user.image.toString()}
+                src={user.image}
                 alt="ユーザーアイコン"
                 width={32}
                 height={32}
