@@ -17,6 +17,9 @@ export default function Home({ session }: SessionProps) {
 
     // 現在選択中のコンテンツを state で保持
     const [activeContent, setActiveContent] = useState<"dashboard" | "attendance" | "task" | "inbox" | "mailSales">("dashboard");
+    // API 呼び出し結果のハンドリング用 state
+    const [registrationMessage, setRegistrationMessage] = useState<string | null>(null);
+    const [registrationError, setRegistrationError] = useState<string | null>(null);
 
     const renderContent = () => {
         switch (activeContent) {
@@ -39,18 +42,31 @@ export default function Home({ session }: SessionProps) {
         const registerUserIfNew = async () => {
             if (!session?.user?.email) return;
 
-            const supabase = createClient();
-            const { data, error } = await supabase
-                .from("users")
-                .select("*")
-                .eq("email", session.user.email)
-                .maybeSingle();
-
-            if (!data && !error) {
-                await supabase.from("users").insert({
-                    name: session.user.name,
-                    email: session.user.email,
+            try {
+                const res = await fetch("/api/users", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name: session.user.name,
+                        email: session.user.email,
+                    }),
                 });
+
+                const data = await res.json();
+                if (data.error) {
+                    setRegistrationError(data.error);
+                    setRegistrationMessage(null);
+                } else {
+                    setRegistrationMessage(data.message);
+                    setRegistrationError(null);
+                }
+                console.log(data);
+            } catch (error: any) {
+                setRegistrationError("User registration failed: " + error.message);
+                setRegistrationMessage(null);
+                console.error("User registration failed:", error);
             }
         };
 
