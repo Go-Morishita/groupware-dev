@@ -1,14 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@/app/lib/utils/supabase/client';
 import useLocalStorageState from 'use-local-storage-state';
-import { nanoid } from 'nanoid';
 
 const StampComponent = ({ session }: SessionProps) => {
     const [currentTime, setCurrentTime] = useState(new Date());
 
-    // 個別に打刻の状態を管理するために打刻ごとに一意のstamp_idを生成し, それをローカルストレージで管理する.
+    // 個別に打刻の状態を管理するために打刻ごとに一意のstamp_idを生成し, それをローカルストレージで管理する（メールアドレスをキーにする）.
     // keyにユーザのメールアドレスを含めることでアカウント変更をまたぐ打刻申請も可能に.
     const [stamp, setStamp] = useLocalStorageState<LocalStorageStamp>(
         `stamp:${session?.user?.email}`,
@@ -27,48 +25,54 @@ const StampComponent = ({ session }: SessionProps) => {
     }, []);
 
     const handleClockIn = async () => {
-        const supabase = createClient();
-        const id = nanoid();
-
+        // 出勤処理: email 情報を用いて /api/stamps に clockIn のリクエストを送信
         try {
-            const time = new Date().toISOString()
-            const { error } = await supabase.from("stamps").insert({
-                stamp_id: id,
-                clock_in: time,
-                email: session?.user?.email
+            const res = await fetch("/api/stamps", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    action: "clockIn",
+                    email: session?.user?.email,
+                }),
             });
+            const data = await res.json();
 
-            if (error) {
-                console.error(error);
-                alert("打刻時にエラーが発生しました。");
+            if (data.error) {
+                alert('出勤処理時にエラーが発生しました。');
             } else {
-                setStamp({ stamp_id: id, work_now: true });
+                setStamp({ stamp_id: data.stamp_id, work_now: true });
             }
-
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            alert("通信エラーが発生しました。");
+            alert('通信エラーが発生しました。');
         }
     };
 
     const handleClockOut = async () => {
-        const supabase = createClient();
-
+        // 退勤処理: ローカルストレージに保存した　stamp_id を用いて /api/stamps に clockOut のリクエストの送信
         try {
-            const { error } = await supabase.from("stamps").update({
-                clock_out: new Date().toISOString()
-            }).eq('stamp_id', stamp.stamp_id);
+            const res = await fetch("/api/stamps", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    action: "clockOut",
+                    stamp_id: stamp.stamp_id,
+                }),
+            });
+            const data = await res.json();
 
-            if (error) {
-                console.error(error);
-                alert("打刻時にエラーが発生しました。");
+            if (data.error) {
+                alert('退勤処理時にエラーが発生しました。');
             } else {
-                setStamp({ stamp_id: "", work_now: false });
+                setStamp({ stamp_id: '', work_now: false });
             }
-
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            alert("通信エラーが発生しました。");
+            alert('通信エラーが発生しました。');
         }
     };
 
@@ -76,6 +80,7 @@ const StampComponent = ({ session }: SessionProps) => {
         <div className="flex flex-col items-center justify-center h-60">
             <h1 className="text-7xl m-0 mb-2">{currentTime.toLocaleTimeString()}</h1>
             {stamp.work_now ? (<p className="text-xl">出勤中</p>) : (<p className="text-xl">未出勤</p>)}
+
             <div className="mt-4 flex space-x-4">
                 <button
                     onClick={handleClockIn}

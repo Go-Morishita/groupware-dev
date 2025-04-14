@@ -12,44 +12,45 @@ import {
     Typography,
     CircularProgress
 } from '@mui/material';
-import { createClient } from '@/app/lib/utils/supabase/client';
 
 const AttendanceRecordComponent = ({ session }: SessionProps) => {
     const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Supabaseから出勤データを取得
+    // API 経由で出勤データを取得
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            const supabase = createClient();
+            try {
+                // email をクエリパラメータとして渡す
+                const res = await fetch(`/api/stamps?email=${session?.user?.email}`);
 
-            const { data, error } = await supabase
-                .from('stamps')
-                .select('clock_in, clock_out')
-                .eq('email', session?.user?.email)
-                .order('clock_in', { ascending: true });
+                const data = await res.json();
 
-            if (error) {
-                console.error('取得エラー:', error.message);
-                setError('データの取得に失敗しました。');
-                setLoading(false);
-                return;
-            }
+                if (data.error) {
+                    console.error('取得エラー:', data.error);
+                    setError('データの取得に失敗しました。');
+                    setLoading(false);
+                    return;
+                }
 
-            if (data) {
+                // clock_in と clock_out 両方が存在するデータのみを利用
                 const records = data
-                    .filter((item) => item.clock_in && item.clock_out)
-                    .map((item) => ({
+                    .filter((item: any) => item.clock_in && item.clock_out)
+                    .map((item: any) => ({
                         date: new Date(item.clock_in),
                         clockIn: new Date(item.clock_in),
                         clockOut: new Date(item.clock_out),
                     }));
-                setAttendanceRecords(records);
-            }
 
-            setLoading(false);
+                setAttendanceRecords(records);
+            } catch (err) {
+                console.error('通信エラー:', err);
+                setError('通信エラーが発生しました。');
+            } finally {
+                setLoading(false);
+            }
         };
 
         fetchData();
