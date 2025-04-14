@@ -23,7 +23,7 @@ export default function Home({ session }: SessionProps) {
             case "task":
                 return <TaskContent session={session} />;
             case "mail":
-                return <MailContent session={session} />;
+                return <MailContent />;
             default:
                 return <DashboardContent />;
         }

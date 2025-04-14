@@ -3,7 +3,7 @@ import { BsEnvelope } from "react-icons/bs";
 import InboxComponent from "./InboxComponent";
 import BccComponent from "./BccComponent";
 
-const InboxContent = ({ session }: SessionProps) => {
+const InboxContent = () => {
   const [activeTab, setActiveTab] = useState<'stamp' | 'attendance'>("stamp");
 
   return (
