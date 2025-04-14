@@ -18,17 +18,22 @@ const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
 
   // タスク追加処理: API に POST リクエストを送信する
   const handleAddTask = async () => {
+    // ユーザー選択、タイトル、説明、期限の入力チェックを追加
+    if (!userId || !title || !description || !deadline) {
+      alert("すべての必須項目を入力してください");
+      return;
+    }
     try {
       const res = await fetch("/api/tasks", {
         method: "POST",
-        headers: { "Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "add",
-          title,
-          description,
-          deadline,
-          manager_id: 3,
+          title: title,
+          description: description,
+          deadline: deadline,
           assigner_id: userId,
+          manager_id: 3,
         }),
       });
       const data = await res.json();
@@ -78,7 +83,7 @@ const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
   }, [])
 
   useEffect(() => {
-    if(userId) {
+    if (userId) {
       fetchUserTask(userId);
     }
   }, [userId])
@@ -191,6 +196,7 @@ const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
               {/* 送信ボタン */}
               <div className="flex items-center justify-between">
                 <button
+                  type='button'
                   onClick={handleAddTask}
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 >

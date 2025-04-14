@@ -38,11 +38,11 @@ export async function POST(request: Request) {
                 return NextResponse.json({ error: "必須のフィールドが不足しています" }, { status: 400 });
             }
             const { data, error } = await supabase.from("tasks").insert({
-                title,
-                description,
-                deadline,
-                manager_id: manager_id ?? null, // manager_id がない場合は null
-                assigner_id,
+                title: title,
+                description: description,
+                deadline: deadline,
+                manager_id: manager_id, 
+                assigner_id: assigner_id,
                 progress: 0, // 初期値
             });
             if (error) {
