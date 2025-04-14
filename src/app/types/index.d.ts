@@ -23,3 +23,11 @@ interface Task {
     manager_id: number;
     assigner_id: number;
 }
+
+interface User {
+    id: number;
+    name: String;
+    email: String;
+    role: String;
+    work_now: boolean;
+}
