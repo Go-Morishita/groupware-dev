@@ -8,55 +8,79 @@ interface SessionProps {
 
 const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
   // 各入力項目の状態管理
-  const [userId, setUserId] = useState<Number | null>();
+  const [userId, setUserId] = useState<number | null>();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState('');
 
-  const [usertasks, setUserTasks] = useState<Task[]>([]);
-
+  const [userTasks, setUserTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<User[]>([]);
 
-  const supabase = createClient();
-
+  // タスク追加処理: API に POST リクエストを送信する
   const handleAddTask = async () => {
     try {
-      const { error: insertError } = await supabase.from("tasks").insert({
-        title: title,
-        description: description,
-        deadline: deadline,
-        manager_id: 3,
-        assigner_id: userId
-      })
+      const res = await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({
+          action: "add",
+          title,
+          description,
+          deadline,
+          manager_id: 3,
+          assigner_id: userId,
+        }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        console.error(data.error);
+        alert("タスク追加に失敗しました");
+      } else {
+        alert("タスクが追加されました");
+        // 入力欄クリア
+        setTitle('');
+        setDescription('');
+        setDeadline('');
+        // 追加後、タスク一覧を再取得
+        if (userId) fetchUserTask(userId);
+      }
+    } catch (err: any) {
+      console.error(err);
+      alert("通信エラーが発生しました");
+    }
+  };
+
+  // ユーザー一覧取得（必要に応じて、こちらも API 化できます）
+  const fetchUsers = async () => {
+    try {
+      // 例として直接 Supabase を使う場合
+      const res = await fetch('/api/users'); // /api/users エンドポイントがあれば利用
+      const data = await res.json();
+      setUsers(data ?? []);
     } catch (err: any) {
       console.log(err);
     }
-  }
+  };
 
-  const fetchUsers = async () => {
+  // タスク一覧取得：assigner_id を元に API (GET /api/tasks?assigner_id=xx) からタスクを取得する
+  const fetchUserTask = async (assigner_id: number) => {
     try {
-      const { data } = await supabase.from("users").select('*');
-      setUsers(data ?? []);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  const fetchUsertask = async (assigner_id: Number) => {
-    try {
-      const { data } = await supabase.from("tasks").select('*').eq('assigner_id', assigner_id);
+      const res = await fetch(`/api/tasks?assigner_id=${assigner_id}`);
+      const data = await res.json();
       setUserTasks(data ?? []);
-    } catch {
-
+    } catch (err: any) {
+      console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
     fetchUsers();
   }, [])
 
   useEffect(() => {
-    userId && fetchUsertask(userId);
+    if(userId) {
+      fetchUserTask(userId);
+    }
   }, [userId])
 
   return (
@@ -89,7 +113,7 @@ const EditTaskComponent: React.FC<SessionProps> = ({ session }) => {
       <div className="w-3/4 flex items-center justify-center bg-gray-200">
         <div className="w-1/2 flex items-center justify-center">
           <div className="w-full p-6">
-            {usertasks.map(task => (
+            {userTasks.map(task => (
               <div key={task.id} className="bg-white rounded shadow p-4 mb-4">
                 <div className="flex justify-between items-center mb-2">
                   <h2 className="text-xl font-semibold">{task.title}</h2>
