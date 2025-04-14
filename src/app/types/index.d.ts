@@ -8,6 +8,12 @@ interface AttendanceRecord {
     clockOut: Date;
 }
 
+interface Stamp {
+    date: Date;
+    clock_in: Date;
+    clock_out: Date;
+}
+
 type LocalStorageStamp = {
     stamp_id: string;
     work_now: boolean;
@@ -19,16 +25,16 @@ interface Task {
     description: string;
     progress: number;
     deadline: Date;
-    status: String;
+    status: string;
     manager_id: number;
     assigner_id: number;
 }
 
 interface User {
     id: number;
-    name: String;
-    email: String;
-    image: String
-    role: String;
+    name: string;
+    email: string;
+    image: string
+    role: string;
     work_now: boolean;
 }

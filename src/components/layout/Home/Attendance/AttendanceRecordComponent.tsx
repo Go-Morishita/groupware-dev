@@ -36,8 +36,8 @@ const AttendanceRecordComponent = ({ session }: SessionProps) => {
 
                 // clock_in と clock_out 両方が存在するデータのみを利用
                 const records = data
-                    .filter((item: any) => item.clock_in && item.clock_out)
-                    .map((item: any) => ({
+                    .filter((item: Stamp) => item.clock_in && item.clock_out)
+                    .map((item: Stamp) => ({
                         date: new Date(item.clock_in),
                         clockIn: new Date(item.clock_in),
                         clockOut: new Date(item.clock_out),
