@@ -43,8 +43,8 @@ const InboxContent = ({ session }: SessionProps) => {
 
       {/* 状態に応じて表示するコンポーネントを切り替える */}
       <div className="mt-4">
-        {activeTab === "stamp" && <InboxComponent session={session} />}
-        {activeTab === "attendance" && <BccComponent session={session} />}
+        {activeTab === "stamp" && <InboxComponent />}
+        {activeTab === "attendance" && <BccComponent />}
       </div>
     </div>
   )
