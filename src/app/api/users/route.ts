@@ -39,3 +39,24 @@ export async function POST(request: Request) {
     }
 
 }
+
+export async function GET(request: Request) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const email = searchParams.get("email");
+
+        if (!email) {
+            return NextResponse.json({ error: "Email is required." }, { status: 400 });
+        }
+
+        const supabase = await createClient();
+        const { data, error } = await supabase.from('users').select('id').eq('email', email);
+
+        if (error) {
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
