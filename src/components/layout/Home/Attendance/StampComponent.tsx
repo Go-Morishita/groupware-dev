@@ -44,7 +44,7 @@ const StampComponent = ({ session }: SessionProps) => {
             } else {
                 setStamp({ stamp_id: data.stamp_id, work_now: true });
             }
-        } catch (err: any) {
+        } catch (err) {
             console.error(err);
             alert('通信エラーが発生しました。');
         }
@@ -70,7 +70,7 @@ const StampComponent = ({ session }: SessionProps) => {
             } else {
                 setStamp({ stamp_id: '', work_now: false });
             }
-        } catch (err: any) {
+        } catch (err) {
             console.error(err);
             alert('通信エラーが発生しました。');
         }
