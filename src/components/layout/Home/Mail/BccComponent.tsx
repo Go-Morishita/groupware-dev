@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BccComponent = ({ session }: SessionProps) => {
+const BccComponent = () => {
     return (
         <div>BccComponent</div>
     )
