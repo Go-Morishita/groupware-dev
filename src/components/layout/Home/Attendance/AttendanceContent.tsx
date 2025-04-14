@@ -10,7 +10,7 @@ const AttendanceContent = ({ session }: SessionProps) => {
         <div>
             <div className="flex items-center gap-2 mb-4">
                 <BsClock className="text-2xl relative top-[1.1px]" />
-                <h1 className="text-2xl font-semibold text-gray-700">打刻管理</h1>
+                <h1 className="text-2xl font-semibold text-gray-700">出勤打刻</h1>
             </div>
 
             {/* サブヘッダー */}

@@ -2,24 +2,17 @@
 import AttendanceContent from "@/components/layout/Home/Attendance/AttendanceContent";
 import DashboardContent from "@/components/layout/Home/Dashboard/DashboardContent";
 import Header from "@/components/layout/Header";
-import InboxContent from "@/components/layout/Home/Inbox/InboxContent";
-import MailSalesContent from "@/components/layout/Home/MailSales/MailSalesContent";
 import TaskContent from "@/components/layout/Home/Task/TaskContent";
-import { createClient } from "@/app/lib/utils/supabase/client";
+import MailContent from "@/components/layout/Home/Mail/MailContent";
 import { useEffect, useState } from "react";
-import { BsClock } from "react-icons/bs";
+import { BsClock, BsEnvelope } from "react-icons/bs";
 import { BsGrid } from "react-icons/bs";
-import { BsInbox } from "react-icons/bs";
-import { BsEnvelopeArrowUp } from "react-icons/bs";
 import { BsCardChecklist } from "react-icons/bs";
 
 export default function Home({ session }: SessionProps) {
 
     // 現在選択中のコンテンツを state で保持
-    const [activeContent, setActiveContent] = useState<"dashboard" | "attendance" | "task" | "inbox" | "mailSales">("dashboard");
-    // API 呼び出し結果のハンドリング用 state
-    const [registrationMessage, setRegistrationMessage] = useState<string | null>(null);
-    const [registrationError, setRegistrationError] = useState<string | null>(null);
+    const [activeContent, setActiveContent] = useState<"dashboard" | "attendance" | "task" | "mail">("dashboard");
 
     const renderContent = () => {
         switch (activeContent) {
@@ -29,10 +22,8 @@ export default function Home({ session }: SessionProps) {
                 return <AttendanceContent session={session} />;
             case "task":
                 return <TaskContent session={session} />;
-            case "inbox":
-                return <InboxContent />;
-            case "mailSales":
-                return <MailSalesContent />;
+            case "mail":
+                return <MailContent session={session} />;
             default:
                 return <DashboardContent />;
         }
@@ -55,17 +46,9 @@ export default function Home({ session }: SessionProps) {
                 });
 
                 const data = await res.json();
-                if (data.error) {
-                    setRegistrationError(data.error);
-                    setRegistrationMessage(null);
-                } else {
-                    setRegistrationMessage(data.message);
-                    setRegistrationError(null);
-                }
                 console.log(data);
-            } catch (error: any) {
-                setRegistrationError("User registration failed: " + error.message);
-                setRegistrationMessage(null);
+
+            } catch (error) {
                 console.error("User registration failed:", error);
             }
         };
@@ -109,7 +92,7 @@ export default function Home({ session }: SessionProps) {
                                         }`}
                                 >
                                     <BsClock className="text-xl" />
-                                    <span className="text-gray-700">打刻管理</span>
+                                    <span className="text-gray-700">出勤打刻</span>
                                 </li>
                                 <li
                                     onClick={() => setActiveContent("task")}
@@ -119,28 +102,13 @@ export default function Home({ session }: SessionProps) {
                                     <BsCardChecklist className="text-xl" />
                                     <span className="text-gray-700">タスク管理</span>
                                 </li>
-                            </ul>
-                        </div>
-
-                        {/* グループ3: メール */}
-                        <div>
-                            <h3 className="uppercase text-md font-semibold mb-2">メール</h3>
-                            <ul className="flex flex-col space-y-1">
                                 <li
-                                    onClick={() => setActiveContent("inbox")}
-                                    className={`flex gap-2 items-center px-2 py-1 rounded-md cursor-pointer transition-colors duration-200 ${activeContent === "inbox" ? "bg-gray-200" : ""
+                                    onClick={() => setActiveContent("mail")}
+                                    className={`flex gap-2 items-center px-2 py-1 rounded-md cursor-pointer transition-colors duration-200 ${activeContent === "mail" ? "bg-gray-200" : ""
                                         }`}
                                 >
-                                    <BsInbox className="text-xl" />
-                                    <span className="text-gray-700">受信ボックス</span>
-                                </li>
-                                <li
-                                    onClick={() => setActiveContent("mailSales")}
-                                    className={`flex gap-2 items-center px-2 py-1 rounded-md cursor-pointer transition-colors duration-200 ${activeContent === "mailSales" ? "bg-gray-200" : ""
-                                        }`}
-                                >
-                                    <BsEnvelopeArrowUp className="text-xl" />
-                                    <span className="text-gray-700">メール営業</span>
+                                    <BsEnvelope className="text-xl" />
+                                    <span className="text-gray-700">メール管理</span>
                                 </li>
                             </ul>
                         </div>
