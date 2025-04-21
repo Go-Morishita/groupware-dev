@@ -65,7 +65,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className="mt-2 md:mt-0 hover:underline"
           >
-            株式会社ROLEEとは？
+            ROLEE Inc.
           </a>
         </div>
       </footer>
