@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsCardChecklist } from "react-icons/bs";
 import SelfTaskComponent from "./SelfTaskComponent";
 import EditTaskComponent from "./EditTaskComponent";
@@ -6,6 +6,18 @@ import EditTaskComponent from "./EditTaskComponent";
 const TaskContent = ({ session }: SessionProps) => {
   // activeTab には 'stamp' または 'attendance' が入る（初期値は 'stamp' とする）
   const [activeTab, setActiveTab] = useState<'stamp' | 'attendance'>("stamp");
+
+  const [role, setRole] = useState("user");
+
+  const getUser = async () => {
+    const res = await fetch(`/api/users?email=${session?.user?.email}`)
+    const data = await res.json();
+    setRole(data?.role);
+  }
+
+  useEffect(() => {
+    getUser();
+  })
 
   return (
     <div>
@@ -28,17 +40,20 @@ const TaskContent = ({ session }: SessionProps) => {
           >
             マイタスク
           </button>
-          <button
-            onClick={() => setActiveTab("attendance")}
-            className={`relative pb-3 font-medium text-md transition duration-200 
+          {role === "admin" && (
+            <button
+              onClick={() => setActiveTab("attendance")}
+              className={`relative pb-3 font-medium text-md transition duration-200 
                             after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 
                             after:bg-blue-600 after:origin-left after:transition-transform after:duration-300 
                             ${activeTab === "attendance"
-                ? "text-blue-600 after:scale-x-100"
-                : "text-gray-600 after:scale-x-0"}`}
-          >
-            タスク追加
-          </button>
+                  ? "text-blue-600 after:scale-x-100"
+                  : "text-gray-600 after:scale-x-0"}`}
+            >
+              タスク追加
+            </button>
+          )}
+
         </div>
       </div>
 

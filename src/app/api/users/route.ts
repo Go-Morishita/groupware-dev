@@ -51,7 +51,7 @@ export async function GET(request: Request) {
       // email が指定されていれば、該当ユーザーの id を返す
       const { data, error } = await supabase
         .from("users")
-        .select("id")
+        .select("id, role")
         .eq("email", email)
         .maybeSingle();
 
