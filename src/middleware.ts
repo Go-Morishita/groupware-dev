@@ -11,9 +11,10 @@ export function middleware(request: NextRequest) {
     const isProtectedRoute = protectedPaths.some((path) => pathname.startsWith(path));
 
     if (isProtectedRoute) {
-        // ここでは、Supabase サーバー側認証で利用するクッキー名として "sb:token" を例示
-        let token = request.cookies.get("authjs.session-token")?.value;
-        token = request.cookies.get("__Secure-authjs.session-token")?.value;
+        // ローカル環境用
+        let token = request.cookies.get("authjs.session-token")?.value
+        // http環境用
+        // let token = request.cookies.get("__Secure-authjs.session-token")?.value;
         if (!token) {
             // 認証用トークンが存在しない場合、ログイン画面へリダイレクト
             const loginUrl = new URL("/login", request.url);
