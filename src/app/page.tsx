@@ -7,7 +7,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#1869db] flex flex-col">
       {/* ヘッダー */}
-      <header className="w-full bg-white shadow-md py-3 px-8 flex items-center">
+      <header className="w-full bg-white shadow-md py-3 px-40 flex items-center gap-2">
+        <Image
+          src="/images/logo_1.png"
+          alt="ROLEEイメージ"
+          width={35}
+          height={35}
+          className="relative top-0.5"
+        />
         <h1 className="text-3xl font-bold">ROLEE</h1>
       </header>
 
@@ -51,7 +58,7 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="w-full py-4 px-8 bg-[#1869db]">
+      <footer className="w-full py-4 px-40 bg-[#1869db]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-sm text-white">
           {/* コピーライト */}
           <span>

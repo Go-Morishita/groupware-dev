@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "ROLEE | 業務効率化のためのグループウェア",
-  description: "チームの連携を加速する、シンプルでパワフルな業務効率化グループウェア。"
+  description: "チームの連携を加速する、シンプルでパワフルな業務効率化グループウェア。",
 };
 
 export default function RootLayout({
