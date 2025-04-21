@@ -38,3 +38,30 @@ interface User {
     role: string;
     work_now: boolean;
 }
+
+interface Report {
+    id: number;
+    task_id: number;
+    pre_progress: number;
+    progress: number;
+    comment: string | null; // コメントがない場合もあるかもしれないので null 許容
+    created_at?: Date;
+}
+
+interface NestedTaskData {
+    title: string;
+    description: string;
+    deadline: string;
+    assigner_id: number;
+    users: Pick<User, 'name'> | null;
+}
+
+interface ReportWithDetails {
+    id: number;
+    task_id: number;
+    pre_progress: number;
+    progress: number;
+    comment: string | null;
+    created_at?: string;
+    tasks: NestedTaskData | null;
+}
