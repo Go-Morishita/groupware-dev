@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
 
     if (isProtectedRoute) {
         // ローカル環境用
-        let token = request.cookies.get("authjs.session-token")?.value
+        const token = request.cookies.get("authjs.session-token")?.value
         // http環境用
         // let token = request.cookies.get("__Secure-authjs.session-token")?.value;
         if (!token) {
