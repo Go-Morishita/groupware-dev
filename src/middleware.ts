@@ -14,10 +14,10 @@ export function middleware(request: NextRequest) {
         // ローカル環境用
         // const token = request.cookies.get("authjs.session-token")?.value
         // http環境用
-        let token = request.cookies.get("__Secure-authjs.session-token")?.value;
+        const token = request.cookies.get("__Secure-authjs.session-token")?.value;
         if (!token) {
             // 認証用トークンが存在しない場合、ログイン画面へリダイレクト
-            const loginUrl = new URL("/login", request.url);
+            const loginUrl = new URL("/", request.url);
             return NextResponse.redirect(loginUrl);
         }
     }
