@@ -17,7 +17,7 @@ export default function Home() {
         <div className="text-white max-w-xl">
           <h1 className="text-5xl md:text-6xl font-extrabold mb-4">業務効率化ならROLEE</h1>
           <p className="text-lg mb-8">
-            チームの連携を加速する、<br className="sm:hidden" />
+            日本発、チームの連携を加速する、<br className="sm:hidden" />
             シンプルでパワフルな業務効率化グループウェア
           </p>
           <div className="flex gap-6">
@@ -50,6 +50,28 @@ export default function Home() {
           />
         </div>
       </main>
+
+      <footer className="w-full py-4 px-8 bg-[#1869db]">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-sm text-white">
+          {/* コピーライト */}
+          <span>
+            &copy; 2014 - {new Date().getFullYear()} ROLEE Inc. All rights reserved.
+          </span>
+
+          {/* 運営会社リンク */}
+          <a
+            href="https://www.rolee.co.jp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 md:mt-0 hover:underline"
+          >
+            株式会社ROLEEとは？
+          </a>
+        </div>
+      </footer>
+
+
+
     </div>
   );
 }
