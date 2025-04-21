@@ -24,7 +24,7 @@ interface Task {
     title: string;
     description: string;
     progress: number;
-    deadline: Date;
+    deadline: string; // <- Date から string に変更
     status: string;
     manager_id: number;
     assigner_id: number;
