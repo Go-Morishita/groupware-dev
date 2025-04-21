@@ -66,7 +66,7 @@ export default function Home({ session }: SessionProps) {
             <div className="flex flex-1 overflow-hidden">
                 {/* サイドナビゲーション */}
                 <aside
-                    className="w-40 p-4 transition-all duration-300 ease-in-out shadow-md border-r border-gray-200 block"
+                    className="w-60 px-6 py-4 transition-all duration-300 ease-in-out shadow-md border-r border-gray-200 block"
                 >
                     <nav className="flex flex-col space-y-6">
                         {/* グループ1: メイン機能 */}
