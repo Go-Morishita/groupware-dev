@@ -45,15 +45,23 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const email = searchParams.get("email");
+    const active = searchParams.get("active");
     const supabase = await createClient();
 
-    if (email) {
+    if (email && active == null) {
       // email が指定されていれば、該当ユーザーの id を返す
       const { data, error } = await supabase
         .from("users")
         .select("id, role")
         .eq("email", email)
         .maybeSingle();
+
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+      return NextResponse.json(data);
+    } else if (active == "true" && email == null) {
+      const { data, error } = await supabase.from("users").select('*').eq("active", true);
 
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });

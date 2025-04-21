@@ -64,11 +64,35 @@ const SelfTaskComponent: React.FC<SessionProps> = ({ session }) => {
       alert('更新にはコメントが必要です');
       return;
     }
+
+    // ① 更新前の進捗を tasks state から取得
+    const originalTask = tasks.find(t => t.id === selectTask);
+    const preProgress = originalTask?.progress ?? 0;
+
     try {
+      // tasksテーブルの更新
       await supabase
         .from('tasks')
-        .update({ progress: selectedProgress /*, comment: selectedComment if your schema supports */ })
+        .update(
+          {
+            progress: selectedProgress,
+          }
+        )
         .eq('id', selectTask);
+
+      // reportテーブルにアクティビティを追加する
+      await supabase
+        .from('reports')
+        .insert(
+          {
+            task_id: selectTask,
+            pre_progress: preProgress,
+            progress: selectedProgress,
+            comment: selectedComment
+          }
+        )
+        .eq('id', selectTask);
+
       // ローカル状態も更新
       setTasks(prev =>
         prev.map(t =>
@@ -83,13 +107,52 @@ const SelfTaskComponent: React.FC<SessionProps> = ({ session }) => {
   };
 
   // 右パネル：「責任者に申請する」
-  const handleRequestApproval = () => {
+  const handleRequestApproval = async () => {
+    if (selectTask === undefined) return;
     if (!selectedComment.trim()) {
-      alert('申請にはコメントが必要です');
+      alert('更新にはコメントが必要です');
       return;
     }
-    // ここで API 呼び出し等を行ってください
-    alert(`責任者に申請しました。\nコメント: ${selectedComment}`);
+
+    // ① 更新前の進捗を tasks state から取得
+    const originalTask = tasks.find(t => t.id === selectTask);
+    const preProgress = originalTask?.progress ?? 0;
+
+    try {
+      // tasksテーブルの更新
+      await supabase
+        .from('tasks')
+        .update(
+          {
+            progress: selectedProgress,
+          }
+        )
+        .eq('id', selectTask);
+
+      // reportテーブルにアクティビティを追加する
+      await supabase
+        .from('reports')
+        .insert(
+          {
+            task_id: selectTask,
+            pre_progress: preProgress,
+            progress: selectedProgress,
+            comment: selectedComment
+          }
+        )
+        .eq('id', selectTask);
+
+      // ローカル状態も更新
+      setTasks(prev =>
+        prev.map(t =>
+          t.id === selectTask ? { ...t, progress: selectedProgress } : t
+        )
+      );
+      alert("タスクの完了申請を送信しました.\n管理者からの通知を待ってください.");
+    } catch (error) {
+      console.error(error);
+      alert('タスクの完了申請を送信できませんでした.');
+    }
   };
 
   return (
@@ -127,28 +190,6 @@ const SelfTaskComponent: React.FC<SessionProps> = ({ session }) => {
               />
             </div>
           ))}
-          <div className="flex justify-center mt-6">
-            <button
-              onClick={async () => {
-                // 全件一括更新
-                const updatePromises = tasks.map(task =>
-                  supabase
-                    .from('tasks')
-                    .update({ progress: task.progress })
-                    .eq('id', task.id)
-                );
-                try {
-                  await Promise.all(updatePromises);
-                  alert('全タスクの進捗を更新しました');
-                } catch {
-                  alert('一括更新に失敗しました');
-                }
-              }}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              全件進捗を更新する
-            </button>
-          </div>
         </div>
       </div>
 
@@ -186,24 +227,23 @@ const SelfTaskComponent: React.FC<SessionProps> = ({ session }) => {
               />
 
               {/* 更新ボタン */}
-              <button
-                onClick={handleUpdateSelected}
-                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2"
-              >
-                更新
-              </button>
-
-              {/* 進捗100%でのみ有効な「責任者に申請する」ボタン */}
-              <button
-                onClick={handleRequestApproval}
-                disabled={selectedProgress !== 100}
-                className={`w-full text-white font-bold py-2 px-4 rounded ${selectedProgress === 100
-                  ? 'bg-green-500 hover:bg-green-700'
-                  : 'bg-gray-300 cursor-not-allowed'
-                  }`}
-              >
-                責任者に申請する
-              </button>
+              <div className="flex flex-col gap-4 mt-4">
+                {selectedProgress < 100 ? (
+                  <button
+                    onClick={handleUpdateSelected}
+                    className="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    更新する
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleRequestApproval}
+                    className="w-full py-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    責任者に申請する
+                  </button>
+                )}
+              </div>
             </>
           ) : (
             <p>タスクを選択してください。</p>
